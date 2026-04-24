@@ -1,5 +1,6 @@
 package me.edwarjimenez.exploraapp.ui.theme
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -21,16 +22,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.firebase.auth.FirebaseAuth
 import me.edwarjimenez.exploraapp.ui.theme.ExploraAppTheme
 
 @Composable
@@ -40,11 +41,17 @@ fun RegisterScreen(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit = {}
 ) {
+    // 1. Instancias de Firebase y Contexto
+    val auth = remember { FirebaseAuth.getInstance() }
+    val context = LocalContext.current
+
+    // 2. Estados de los campos
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
     var acceptedTerms by remember { mutableStateOf(false) }
+    var isLoading by remember { mutableStateOf(false) }
 
     val primaryOrange = Color(0xFFE45D25)
     val lightGrayBg = Color(0xFFF8F9FE)
@@ -177,8 +184,31 @@ fun RegisterScreen(
 
             Spacer(modifier = Modifier.height(32.dp))
 
+            // 3. Botón con Lógica Real de Firebase
             Button(
-                onClick = { onRegisterSuccess() },
+                onClick = {
+                    if (email.isNotEmpty() && password.isNotEmpty() && password == confirmPassword) {
+                        if (acceptedTerms) {
+                            isLoading = true
+                            auth.createUserWithEmailAndPassword(email, password)
+                                .addOnCompleteListener { task ->
+                                    isLoading = false
+                                    if (task.isSuccessful) {
+                                        // ÉXITO: Navega a la Home
+                                        onRegisterSuccess()
+                                    } else {
+                                        // ERROR: Muestra el por qué
+                                        Toast.makeText(context, "Error: ${task.exception?.message}", Toast.LENGTH_LONG).show()
+                                    }
+                                }
+                        } else {
+                            Toast.makeText(context, "Debes aceptar los términos", Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        Toast.makeText(context, "Revisa los campos y que las contraseñas coincidan", Toast.LENGTH_SHORT).show()
+                    }
+                },
+                enabled = !isLoading,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(64.dp),
@@ -196,10 +226,14 @@ fun RegisterScreen(
                         ),
                     contentAlignment = Alignment.Center
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text("Registrarse", fontSize = 18.sp, fontWeight = FontWeight.Bold)
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, modifier = Modifier.size(24.dp))
+                    if (isLoading) {
+                        CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
+                    } else {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text("Registrarse", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, modifier = Modifier.size(24.dp))
+                        }
                     }
                 }
             }
@@ -255,6 +289,7 @@ fun RegisterScreen(
     }
 }
 
+// 4. Componentes de Apoyo (Field y SocialButton corregidos)
 @Composable
 fun RegisterField(
     label: String,
@@ -267,12 +302,7 @@ fun RegisterField(
     isPassword: Boolean = false
 ) {
     Column(modifier = modifier) {
-        Text(
-            text = label,
-            fontSize = 12.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.Gray
-        )
+        Text(text = label, fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color.Gray)
         Spacer(modifier = Modifier.height(8.dp))
         TextField(
             value = value,
@@ -288,7 +318,6 @@ fun RegisterField(
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = inputBg,
                 unfocusedContainerColor = inputBg,
-                disabledContainerColor = inputBg,
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent
             ),
@@ -297,10 +326,18 @@ fun RegisterField(
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun RegisterScreenPreview() {
-    ExploraAppTheme(){
-        RegisterScreen(onRegisterSuccess = {}, onNavigateToLogin = {})
+fun SocialButton(text: String, modifier: Modifier = Modifier, icon: androidx.compose.ui.graphics.vector.ImageVector) {
+    OutlinedButton(
+        onClick = { /* Acción para social login */ },
+        modifier = modifier.height(50.dp),
+        shape = RoundedCornerShape(25.dp),
+        colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Black)
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(imageVector = icon, contentDescription = null, modifier = Modifier.size(20.dp))
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(text = text, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
+        }
     }
 }

@@ -5,15 +5,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.compose.ui.Modifier
 import me.edwarjimenez.exploraapp.ui.theme.ExploraAppTheme
 import me.edwarjimenez.exploraapp.ui.theme.LoginScreen
 import me.edwarjimenez.exploraapp.ui.theme.RegisterScreen
@@ -23,37 +18,48 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val myNavController = rememberNavController()
+            ExploraAppTheme {
+                val myNavController = rememberNavController()
 
-            NavHost(
-                navController = myNavController,
-                startDestination = "login",
-                modifier = Modifier.fillMaxSize()
-            ) {
-                composable(route = "login"){
-                    LoginScreen(onLoginSuccess = {}, onNavigateToRegister = {
-                        myNavController.navigate("register")
-                    })
-                }
-
-                composable("register") {
-                    RegisterScreen(
-                        onRegisterSuccess = {
-                            myNavController.navigate("home") {
-                                popUpTo("login") { inclusive = true }
+                NavHost(
+                    navController = myNavController,
+                    startDestination = "login",
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    composable(route = "login") {
+                        LoginScreen(
+                            onLoginSuccess = {
+                                myNavController.navigate("home") {
+                                    popUpTo("login") { inclusive = true }
+                                }
+                            },
+                            onNavigateToRegister = {
+                                myNavController.navigate("register")
                             }
-                        },
-                        onNavigateToLogin = {
-                            myNavController.popBackStack()
-                        },
-                        onBackClick = {
-                            myNavController.popBackStack() // ← Esto es lo que faltaba
-                        }
-                    )
+                        )
+                    }
+
+                    composable(route = "register") {
+                        RegisterScreen(
+                            onRegisterSuccess = {
+                                myNavController.navigate("home") {
+                                    popUpTo("login") { inclusive = true }
+                                }
+                            },
+                            onNavigateToLogin = {
+                                myNavController.popBackStack()
+                            },
+                            onBackClick = {
+                                myNavController.popBackStack()
+                            }
+                        )
+                    }
+
+                    composable(route = "home") {
+                        HomeScreen()
+                    }
                 }
             }
-
         }
-
     }
 }

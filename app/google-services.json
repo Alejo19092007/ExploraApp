@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "869237652791",
+    "project_id": "loginfirebase-7bd3f",
+    "storage_bucket": "loginfirebase-7bd3f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:869237652791:android:535fb160bb967bd953eeb2",
+        "android_client_info": {
+          "package_name": "me.edwarjimenez.exploraapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDLrnHXaTqqAvb0noiOFUqymlC-XlpWT1Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
