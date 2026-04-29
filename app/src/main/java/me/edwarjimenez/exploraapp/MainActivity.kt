@@ -9,9 +9,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.compose.ui.Modifier
+import me.edwarjimenez.exploraapp.ui.elements.HomeScreen
 import me.edwarjimenez.exploraapp.ui.theme.ExploraAppTheme
-import me.edwarjimenez.exploraapp.ui.theme.LoginScreen
-import me.edwarjimenez.exploraapp.ui.theme.RegisterScreen
+import me.edwarjimenez.exploraapp.ui.elements.LoginScreen
+import me.edwarjimenez.exploraapp.ui.elements.RegisterScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

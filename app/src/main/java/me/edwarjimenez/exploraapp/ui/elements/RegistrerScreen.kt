@@ -1,4 +1,4 @@
-package me.edwarjimenez.exploraapp.ui.theme
+package me.edwarjimenez.exploraapp.ui.elements
 
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -22,17 +22,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.firebase.auth.FirebaseAuth
-import me.edwarjimenez.exploraapp.ui.theme.ExploraAppTheme
 
 @Composable
 fun RegisterScreen(
@@ -296,7 +297,7 @@ fun RegisterField(
     value: String,
     onValueChange: (String) -> Unit,
     placeholder: String,
-    leadingIcon: androidx.compose.ui.graphics.vector.ImageVector,
+    leadingIcon: ImageVector,
     inputBg: Color,
     modifier: Modifier = Modifier,
     isPassword: Boolean = false
@@ -313,7 +314,7 @@ fun RegisterField(
                 .clip(RoundedCornerShape(28.dp)),
             placeholder = { Text(placeholder, color = Color.Gray) },
             leadingIcon = { Icon(leadingIcon, contentDescription = null, tint = Color.Gray) },
-            visualTransformation = if (isPassword) PasswordVisualTransformation() else androidx.compose.ui.text.input.VisualTransformation.None,
+            visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
             keyboardOptions = KeyboardOptions(keyboardType = if (isPassword) KeyboardType.Password else KeyboardType.Text),
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = inputBg,
@@ -327,7 +328,7 @@ fun RegisterField(
 }
 
 @Composable
-fun SocialButton(text: String, modifier: Modifier = Modifier, icon: androidx.compose.ui.graphics.vector.ImageVector) {
+fun SocialButton(text: String, modifier: Modifier = Modifier, icon: ImageVector) {
     OutlinedButton(
         onClick = { /* Acción para social login */ },
         modifier = modifier.height(50.dp),

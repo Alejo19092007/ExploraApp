@@ -1,5 +1,6 @@
-package me.edwarjimenez.exploraapp.ui.theme
+package me.edwarjimenez.exploraapp.ui.elements
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -20,15 +21,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
-import me.edwarjimenez.exploraapp.ui.theme.ExploraAppTheme
 
 @Composable
 fun LoginScreen(
@@ -37,7 +37,7 @@ fun LoginScreen(
 ) {
     // 1. Instancia de Firebase y Contexto
     val auth = remember { Firebase.auth }
-    val context = androidx.compose.ui.platform.LocalContext.current
+    val context = LocalContext.current
 
     // 2. Estados de los campos y UI
     var email by remember { mutableStateOf("") }
@@ -141,14 +141,14 @@ fun LoginScreen(
                                     if (task.isSuccessful) {
                                         onLoginSuccess() // Navega a la Home
                                     } else {
-                                        android.widget.Toast.makeText(
+                                        Toast.makeText(
                                             context, "Error: ${task.exception?.message}",
-                                            android.widget.Toast.LENGTH_SHORT
+                                            Toast.LENGTH_SHORT
                                         ).show()
                                     }
                                 }
                         } else {
-                            android.widget.Toast.makeText(context, "Completa los campos", android.widget.Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Completa los campos", Toast.LENGTH_SHORT).show()
                         }
                     },
                     enabled = !isLoading, // Deshabilitar si está cargando
