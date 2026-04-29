@@ -1,5 +1,9 @@
 package me.edwarjimenez.exploraapp
 
+import me.edwarjimenez.exploraapp.ui.elements.AddTouristicPlaceScreen
+
+
+
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -57,7 +61,24 @@ class MainActivity : ComponentActivity() {
                     }
 
                     composable(route = "home") {
-                        HomeScreen()
+                        HomeScreen(
+                            onLogout = {
+                                myNavController.navigate("login") {
+                                    popUpTo(0) { inclusive = true }
+                                }
+                            },
+                            onAddPlace = {
+                                myNavController.navigate("addTouristicPlace")
+                            }
+                        )
+                    }
+
+                    composable(route = "addTouristicPlace") {
+                        AddTouristicPlaceScreen(
+                            onBackClick = {
+                                myNavController.popBackStack()
+                            }
+                        )
                     }
                 }
             }
